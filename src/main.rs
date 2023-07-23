@@ -1,26 +1,53 @@
-use chrono::{Utc, NaiveDateTime, Duration};
+// Import necessary modules
+use chrono::{NaiveDateTime, NaiveDate};
 use std::collections::HashMap;
 
-// Rest of the code remains the same
+// Define the Pegawai struct
+struct Pegawai {
+    id_pegawai: i32,
+    nama: String,
+}
+
+// Define the Parkir struct
+struct Parkir {
+    id_parkir: i32,
+    masuk: NaiveDateTime,
+    keluar: NaiveDateTime,
+    harga_perjam: f64,
+    total_harga: f64,
+    nopol: String,
+    type_parkir: String,
+}
+
+// Define the Tiket struct that holds collections of Pegawai and Parkir
+struct Tiket {
+    pegawai: Vec<Pegawai>,
+    parkir: Vec<Parkir>,
+}
 
 impl Tiket {
-    // Rest of the implementation remains the same
-    
-    fn add_parkir_auto(
+    // Implement methods for Tiket struct
+    fn new() -> Self {
+        Self {
+            pegawai: Vec::new(),
+            parkir: Vec::new(),
+        }
+    }
+
+    fn add_pegawai(&mut self, id_pegawai: i32, nama: String) {
+        self.pegawai.push(Pegawai { id_pegawai, nama });
+    }
+
+    fn add_parkir(
         &mut self,
         id_parkir: i32,
+        masuk: NaiveDateTime,
+        keluar: NaiveDateTime,
         harga_perjam: f64,
+        total_harga: f64,
         nopol: String,
         type_parkir: String,
     ) {
-        let masuk = Utc::now().naive_utc(); // Get the current date and time
-        let keluar = masuk + Duration::hours(2); // Example: Set the "keluar" date 2 hours after "masuk"
-
-        // You can adjust the "keluar" date based on your requirements.
-        
-        // Calculate the total_harga (example: assuming 1 hour minimum charge)
-        let total_harga = harga_perjam * 1.0;
-
         self.parkir.push(Parkir {
             id_parkir,
             masuk,
@@ -30,6 +57,14 @@ impl Tiket {
             nopol,
             type_parkir,
         });
+    }
+
+    fn get_pegawai(&self) -> &Vec<Pegawai> {
+        &self.pegawai
+    }
+
+    fn get_parkir(&self) -> &Vec<Parkir> {
+        &self.parkir
     }
 }
 
@@ -41,8 +76,13 @@ fn main() {
     tiket.add_pegawai(1, "John Doe".to_string());
     tiket.add_pegawai(2, "Jane Smith".to_string());
 
-    tiket.add_parkir_auto(1, 10.0, "ABC123".to_string(), "Car".to_string());
-    tiket.add_parkir_auto(2, 8.0, "XYZ789".to_string(), "Motorcycle".to_string());
+    let masuk1 = NaiveDate::from_ymd(2023, 7, 23).and_hms(10, 0, 0);
+    let keluar1 = NaiveDate::from_ymd(2023, 7, 23).and_hms(14, 30, 0);
+    tiket.add_parkir(1, masuk1, keluar1, 10.0, 40.0, "ABC123".to_string(), "Car".to_string());
+
+    let masuk2 = NaiveDate::from_ymd(2023, 7, 23).and_hms(12, 0, 0);
+    let keluar2 = NaiveDate::from_ymd(2023, 7, 23).and_hms(16, 45, 0);
+    tiket.add_parkir(2, masuk2, keluar2, 8.0, 34.0, "XYZ789".to_string(), "Motorcycle".to_string());
 
     // Retrieve Pegawai and Parkir data
     let pegawai_data = tiket.get_pegawai();
